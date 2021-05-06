@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Esercizio OOP</title>
+        <style>
+            body {
+                background-color: #c1fde1;
+            }
+            form {
+                padding-top: 35vh;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <form action="php\DataStorage.php" method="GET">
+                <h3>testa l'applicazione:</h3>
+                <select name="type">
+                    <option value="sms">sms</option>
+                    <option value="posta">posta</option>
+                    <option value="email">email</option>
+                </select>
+                <input type="text" name="text" placeholder="inserisci il testo...">
+                <button>Invia</button>
+            </form>
+        </main>
+    </body>
+</html>
