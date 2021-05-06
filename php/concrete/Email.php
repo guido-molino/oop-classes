@@ -2,21 +2,18 @@
 
 class Email extends DataStorage {
 
-    public function __construct($textInput) {
+    public function __construct($text) {
 
-        if (!$this->isValid($textInput)) {
+        if (!$this->isValid($text)) {
             echo('Email non valida');
         }
 
-        $this->email = $textInput;
+        $this->email = $text;
     }
 
-    private function isValid($textInput) {
+    protected function isValid($text) {
 
-        return filter_var($textInput, FILTER_VALIDATE_EMAIL) !== false;
+        return filter_var($text, FILTER_VALIDATE_EMAIL) !== false;
     }
 
 }
-
-
-?>

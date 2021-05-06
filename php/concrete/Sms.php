@@ -2,22 +2,21 @@
 
 class Sms extends DataStorage {
 
-    public function __construct($textInput) {
+    public function __construct($text) {
 
-        if ($this->isValid($textInput)){
+        if ($this->isValid($text)){
             echo('Il testo è troppo lungo');
         }
 
-        $this->sms = $textInput;
+        $this->sms = $text;
+        echo($this->sms);
 
     }
 
-    private function isValid($textInput) {
+    private function isValid($text) {
 
-        return strlen($textInput) > 10;
+        return strlen($text) > 10;
         
     }
 
 }
-
-?>

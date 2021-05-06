@@ -2,19 +2,18 @@
 
 class Posta extends DataStorage {
 
-    public function __construct($textInput) {
+    public function __construct($text) {
 
-        if ($this->isValid($textInput)) {
+        if ($this->isValid($text)) {
             echo ('Il testo è troppo lungo');
         }
-
-        $this->posta = $textInput;
+        $this->posta = $text;
 
     }
 
-    protected function isValid($textInput) {
+    private function isValid($text) {
 
-        return strlen($textInput) > 500;
+        return strlen($text) > 20;
 
     }
 
