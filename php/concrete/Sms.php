@@ -1,10 +1,12 @@
-<?php namespace Sms;
-
-use DataStorage\DataStorage;
+<?php 
 
 class Sms extends DataStorage {
 
-    public function __construct(string $textInput) {
+    public function __construct($textInput) {
+
+        if ($this->isValid($textInput)){
+            echo('Il testo è troppo lungo');
+        }
 
         $this->sms = $textInput;
 
@@ -12,7 +14,7 @@ class Sms extends DataStorage {
 
     private function isValid($textInput) {
 
-        
+        return strlen($textInput) > 10;
         
     }
 

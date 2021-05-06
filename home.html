@@ -1,17 +1,27 @@
 <html>
-    <header>
+    <head>
         <title>Esercizio OOP</title>
-    </header>
+        <style>
+            body {
+                background-color: powderblue;
+            }
+            form {
+                padding-top: 300px;
+                text-align: center;
+            }
+        </style>
+    </head>
     <body>
         <main>
             <form action="php\DataStorage.php" method="POST">
-                <span>testa l'applicazione:</span>
+                <h3>testa l'applicazione:</h3>
                 <select name="type" id="type">
                     <option value="sms">sms</option>
                     <option value="posta">posta</option>
                     <option value="email">email</option>
                 </select>
-                <input type="text" name="textInput" id="textInput" placeholder="inserisci il testo...">
+                <input type="text" name="textInput" placeholder="inserisci il testo...">
+                <button>Invia</button>
             </form>
         </main>
     </body>

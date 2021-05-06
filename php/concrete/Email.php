@@ -1,15 +1,13 @@
-<?php namespace Email;
-
-use DataStorage\DataStorage;
+<?php 
 
 class Email extends DataStorage {
 
-    public function __construct(string $textInput) {
+    public function __construct($textInput) {
 
-        echo('Email');
         if (!$this->isValid($textInput)) {
-            throw 'Enter a valid email address';
+            echo('Email non valida');
         }
+
         $this->email = $textInput;
     }
 

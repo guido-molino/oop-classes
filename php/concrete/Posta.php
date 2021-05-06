@@ -1,21 +1,21 @@
-<?php namespace Posta;
-
-use DataStorage\DataStorage;
+<?php 
 
 class Posta extends DataStorage {
 
-    public function __construct(string $textInput) {
+    public function __construct($textInput) {
+
+        if ($this->isValid($textInput)) {
+            echo ('Il testo è troppo lungo');
+        }
 
         $this->posta = $textInput;
 
     }
 
-    private function isValid($textInput) {
+    protected function isValid($textInput) {
 
-
+        return strlen($textInput) > 500;
 
     }
 
 }
-
-?>

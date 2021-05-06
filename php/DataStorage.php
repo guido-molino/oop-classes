@@ -1,14 +1,18 @@
-<?php namespace DataStorage;
+<?php
+include 'concrete/Posta.php';
+include 'concrete/Email.php';
+include 'concrete/Sms.php';
+
+$type = $_POST["type"];
+$textInput = $_POST["textInput"];
+$dataStorage = new DataStorage($type, $textInput);
 
 class DataStorage {
 
-    protected $type = null;
-    protected $path = '/php/concrete/'; 
-
-    public function __construct($type, $path, string $textInput) {
+    public function __construct($type,$textInput) {
         
         $this->type = $type;
-        $this->istantiateByType($path, $textInput);
+        $this->istantiateByType($textInput);
 
     }
 
@@ -19,9 +23,9 @@ class DataStorage {
 
     }
 
-    protected function istantiateByType($path, $textInput) {
+    protected function istantiateByType($textInput) {
 
-        $class   = $path.$this->type;
+        $class = $this->type;
         $istance = new $class($textInput);
         return $istance;
 
@@ -29,4 +33,5 @@ class DataStorage {
 
 }
 
-?>
+
+
