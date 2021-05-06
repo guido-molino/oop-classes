@@ -2,8 +2,7 @@
 
 use DataStorage\DataStorage;
 
-class Email extends DataStorage
-{
+class Email extends DataStorage {
 
     public function __construct(string $textInput) {
 

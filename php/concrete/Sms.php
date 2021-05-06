@@ -2,8 +2,7 @@
 
 use DataStorage\DataStorage;
 
-class Sms extends DataStorage
-{
+class Sms extends DataStorage {
 
     public function __construct(string $textInput) {
 

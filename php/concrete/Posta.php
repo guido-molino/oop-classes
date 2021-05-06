@@ -2,8 +2,7 @@
 
 use DataStorage\DataStorage;
 
-class Posta extends DataStorage
-{
+class Posta extends DataStorage {
 
     public function __construct(string $textInput) {
 
