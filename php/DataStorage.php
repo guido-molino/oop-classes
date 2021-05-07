@@ -1,5 +1,5 @@
 <?php
-require 'Assembler.php';
+require 'Base.php';
 include 'concrete/Posta.php';
 include 'concrete/Email.php';
 include 'concrete/Sms.php';

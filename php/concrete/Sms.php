@@ -1,6 +1,6 @@
 <?php 
 
-class Sms implements Assembler {
+class Sms implements Base {
 
     public function __construct($text) {
 

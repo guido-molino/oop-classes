@@ -1,6 +1,6 @@
 <?php 
 
-class Email implements Assembler {
+class Email implements Base {
 
     public function __construct($text) {
 
@@ -20,7 +20,7 @@ class Email implements Assembler {
     protected function isValid($text) {
 
         return filter_var($text, FILTER_VALIDATE_EMAIL) !== false;
-        
+
     }
 
 }

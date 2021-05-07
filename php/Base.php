@@ -1,6 +1,6 @@
 <?php
 
-interface Assembler {
+interface Base {
 
     public function response();
 

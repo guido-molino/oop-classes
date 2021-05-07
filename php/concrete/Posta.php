@@ -1,6 +1,6 @@
 <?php
 
-class Posta implements Assembler{
+class Posta implements Base {
 
     public function __construct($text) {
 
@@ -14,7 +14,7 @@ class Posta implements Assembler{
     public function response() {
 
         return 'Istanziamento classe per: Posta';
-        
+
     }
 
     private function isValid($text) {
