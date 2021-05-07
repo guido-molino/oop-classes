@@ -13,7 +13,7 @@ class Sms implements Base {
 
     public function response() {
 
-        return 'Istanziamento classe per: SMS';
+        echo('Istanziamento classe per: SMS');
         
     }
 

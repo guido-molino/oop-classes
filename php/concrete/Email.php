@@ -13,7 +13,7 @@ class Email implements Base {
 
     public function response() {
 
-        return 'Istanziamento classe per: Email';
+        echo('Istanziamento classe per: Email');
         
     }
 

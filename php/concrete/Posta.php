@@ -13,7 +13,7 @@ class Posta implements Base {
 
     public function response() {
 
-        return 'Istanziamento classe per: Posta';
+        echo('Istanziamento classe per: Posta');
 
     }
 
