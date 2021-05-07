@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-class Posta extends DataStorage {
+class Posta implements Assembler{
 
     public function __construct($text) {
 
@@ -9,6 +9,12 @@ class Posta extends DataStorage {
         }
         $this->posta = $text;
 
+    }
+
+    public function response() {
+
+        return 'Istanziamento classe per: Posta';
+        
     }
 
     private function isValid($text) {
