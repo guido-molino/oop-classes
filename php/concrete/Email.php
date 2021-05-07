@@ -4,22 +4,21 @@ class Email implements Base {
 
     public function __construct($text) {
 
-        if (!$this->isValid($text)) {
-            echo('Email non valida');
-        }
         $this->email = $text;
 
     }
 
     public function response() {
 
-        echo('Istanziamento classe per: Email');
+        echo('Istanziamento classe per: Email <br>');
         
     }
 
-    protected function isValid($text) {
+    public function isValid($text) {
 
-        return filter_var($text, FILTER_VALIDATE_EMAIL) !== false;
+        if (!filter_var($text, FILTER_VALIDATE_EMAIL) !== false) {
+            echo ('Email non valida');
+        }
 
     }
 

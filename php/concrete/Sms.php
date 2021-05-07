@@ -4,22 +4,21 @@ class Sms implements Base {
 
     public function __construct($text) {
 
-        if ($this->isValid($text)){
-            echo('Il testo è troppo lungo');
-        }
         $this->sms = $text;
 
     }
 
     public function response() {
 
-        echo('Istanziamento classe per: SMS');
+        echo('Istanziamento classe per: SMS <br>');
         
     }
 
-    private function isValid($text) {
+    public function isValid($text) {
 
-        return strlen($text) > 10;
+        if (strlen($text) > 20) {
+            echo ('Il testo è troppo lungo');
+        }
         
     }
 
