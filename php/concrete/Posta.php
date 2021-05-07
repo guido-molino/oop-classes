@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-class Posta extends DataStorage {
+class Posta implements Base {
 
     public function __construct($text) {
 
@@ -8,6 +8,12 @@ class Posta extends DataStorage {
             echo ('Il testo è troppo lungo');
         }
         $this->posta = $text;
+
+    }
+
+    public function response() {
+
+        echo('Istanziamento classe per: Posta');
 
     }
 

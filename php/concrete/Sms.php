@@ -1,16 +1,20 @@
 <?php 
 
-class Sms extends DataStorage {
+class Sms implements Base {
 
     public function __construct($text) {
 
         if ($this->isValid($text)){
             echo('Il testo è troppo lungo');
         }
-
         $this->sms = $text;
-        echo($this->sms);
 
+    }
+
+    public function response() {
+
+        echo('Istanziamento classe per: SMS');
+        
     }
 
     private function isValid($text) {

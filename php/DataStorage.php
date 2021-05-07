@@ -1,4 +1,5 @@
 <?php
+require 'Base.php';
 include 'concrete/Posta.php';
 include 'concrete/Email.php';
 include 'concrete/Sms.php';
@@ -13,19 +14,16 @@ class DataStorage {
         
         $this->type = $type;
         $this->istantiateByType($text);
-    }
-
-    public function response() {
-        
-        $response = 'Istanziamento classe per: '. $this->type;
-        echo($response);
+    
     }
 
     protected function istantiateByType($text) {
 
-        $class = $this->type;
-        $istance = new $class($text);
+        $class = $this->type; //sms
+        $istance = new $class($text); 
+        $istance->response();
         return $istance;
     }
 
 }
+
