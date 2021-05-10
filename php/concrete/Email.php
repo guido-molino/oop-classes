@@ -18,6 +18,8 @@ class Email implements Base {
 
         if (!filter_var($text, FILTER_VALIDATE_EMAIL) !== false) {
             echo ('Email non valida');
+        } else {
+            return 1;
         }
 
     }

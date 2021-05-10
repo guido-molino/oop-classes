@@ -18,6 +18,8 @@ class Posta implements Base {
 
         if (strlen($text) > 20) {
             echo ('Il testo è troppo lungo');
+        } else {
+            return 1;
         }
 
     }

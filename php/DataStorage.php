@@ -7,32 +7,37 @@ include '../database/SendTypePdo.php';
 
 $type = $_GET["type"];
 $text = $_GET["text"];
-$dataStorage = new DataStorage($type,$text,$conn);
+$dataStorage = new DataStorage($type,$text);
+$dataStorage->store($conn);
 
 class DataStorage {
 
-    public function __construct($type,$text,$conn) {
+    protected $isValid = 1;
+
+    public function __construct($type,$text) {
         
         $this->type = $type;
+        $this->text = $text;
         $this->istantiateByType($text);
-        $this->conn = $conn;
-    
     }
 
-    protected function istantiateByType($text) {
+    protected function istantiateByType() {
 
         $class = $this->type; //sms
-        $istance = new $class($text); //istanziamento con attribute $text
-        $istance->isValid($text); //validation su $text
-        $this->store($text);
-        $istance->response(); //response
-
+        $istance = new $class($this->text); //istanziamento con attribute $text
+        $this->isValid = $istance->isValid($this->text); //validazione
+        if ($this->isValid == 1){
+            $istance->response(); //response
+        }
+        
     }
 
-    protected function store($text) {
+    public function store($conn) {
 
-        $store = new SendTypePdo($this->type, $text, $this->conn);
-        $store->insert();
+        if ($this->isValid == 1){
+            $store = new SendTypePdo($this->type, $this->text);
+            $store->insert($conn);
+        }
 
     }
 

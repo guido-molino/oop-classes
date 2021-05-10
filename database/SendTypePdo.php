@@ -13,25 +13,24 @@ try {
 
 class SendTypePdo {
 
-    public function __construct($type,$text,$conn) {
+    public function __construct($type,$text) {
         
         $this->type = $type;
         $this->text = $text;
         $this->created_at = $this->timestamp();
-        $this->conn = $conn;
+ 
     }
 
-    public function insert() {
+    public function insert($conn) {
 
         //come faccio a far arrivare $conn qua dentro?
-        echo('insert');
         $data = [
             'type' => $this->type,
             'text' => $this->text,
             'created_at' => $this->created_at
         ];
 
-        $insertStatement = $this->conn->prepare("INSERT INTO types (type, text, created_at) VALUES (:type, :text, :created_at)");
+        $insertStatement = $conn->prepare("INSERT INTO types (type, text, created_at) VALUES (:type, :text, :created_at)");
 
         if ($insertStatement->execute($data)) {
             echo "New record created successfully <br>";
