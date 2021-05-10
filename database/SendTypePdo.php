@@ -3,7 +3,7 @@ require_once 'Pdoconfig.php';
 
 try {
     $conn = new PDO("$db_connection:host=$host;dbname=$dbname", $username, $password);
-    echo "Connessione a $dbname con $host eseguita con successo. <br>";
+    echo "Connessione a $dbname tramite $host eseguita. <br>";
 } catch (PDOException $pe) {
     die("Impossibile connettersi a $dbname :" . $pe->getMessage());
 }
@@ -23,7 +23,6 @@ class SendTypePdo {
 
     public function insert($conn) {
 
-        //come faccio a far arrivare $conn qua dentro?
         $data = [
             'type' => $this->type,
             'text' => $this->text,

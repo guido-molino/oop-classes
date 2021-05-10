@@ -1,6 +1,6 @@
 <?php
 
-class Posta implements Base {
+class Posta implements Template {
 
     public function __construct($text) {
 
@@ -17,9 +17,7 @@ class Posta implements Base {
     public function isValid($text) {
 
         if (strlen($text) > 20) {
-            echo ('Il testo è troppo lungo');
-        } else {
-            return 1;
+            throw new CustomException('Testo troppo lungo', 'mia@stefano.com');
         }
 
     }

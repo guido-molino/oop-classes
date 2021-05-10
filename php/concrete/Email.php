@@ -1,27 +1,22 @@
 <?php 
 
-class Email implements Base {
+class Email implements Template {
 
     public function __construct($text) {
 
         $this->email = $text;
-
     }
 
     public function response() {
 
-        echo('Istanziamento classe per: Email <br>');
-        
+        echo('Istanziamento classe per: Email <br>');    
     }
 
     public function isValid($text) {
 
         if (!filter_var($text, FILTER_VALIDATE_EMAIL) !== false) {
-            echo ('Email non valida');
-        } else {
-            return 1;
-        }
-
+            throw new CustomException('Email non valida', 'mia@stefano.com');
+        } 
     }
 
 }
