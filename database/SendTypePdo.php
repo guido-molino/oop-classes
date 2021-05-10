@@ -3,9 +3,9 @@ require_once 'Pdoconfig.php';
 
 try {
     $conn = new PDO("$db_connection:host=$host;dbname=$dbname", $username, $password);
-    echo "Connected to $dbname at $host successfully. <br>";
+    echo "Connessione a $dbname con $host eseguita con successo. <br>";
 } catch (PDOException $pe) {
-    die("Could not connect to the database $dbname :" . $pe->getMessage());
+    die("Impossibile connettersi a $dbname :" . $pe->getMessage());
 }
 
 
@@ -33,9 +33,9 @@ class SendTypePdo {
         $insertStatement = $conn->prepare("INSERT INTO types (type, text, created_at) VALUES (:type, :text, :created_at)");
 
         if ($insertStatement->execute($data)) {
-            echo "New record created successfully <br>";
+            echo "Nuovi dati inseriti con successo! <br>";
         } else {
-            echo "Unable to create record";
+            echo "Registrazione dei dati fallita <br>";
         }
     }
 
