@@ -1,16 +1,6 @@
 <?php
 require_once 'Pdoconfig.php';
 
-try {
-    $conn = new PDO("$db_connection:host=$host;dbname=$dbname", $username, $password);
-    echo "Connessione a $dbname tramite $host eseguita. <br>";
-} catch (PDOException $pe) {
-    die("Impossibile connettersi a $dbname :" . $pe->getMessage());
-}
-
-
-// $conn è l'oggetto istanziato alla classe pdo che effettua la connessione al db
-
 class SendTypePdo {
 
     public function __construct($type,$text) {

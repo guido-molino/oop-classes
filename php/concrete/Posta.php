@@ -17,7 +17,7 @@ class Posta implements Template {
     public function isValid($text) {
 
         if (strlen($text) > 20) {
-            throw new CustomException('Testo troppo lungo', 'mia@stefano.com');
+            throw new CustomException('Testo troppo lungo');
         }
 
     }

@@ -15,7 +15,7 @@ class Email implements Template {
     public function isValid($text) {
 
         if (!filter_var($text, FILTER_VALIDATE_EMAIL) !== false) {
-            throw new CustomException('Email non valida', 'mia@stefano.com');
+            throw new CustomException('Email non valida');
         } 
     }
 

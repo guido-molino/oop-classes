@@ -1,19 +1,9 @@
 <?php
+
 require 'Template.php';
 include 'concrete/Posta.php';
 include 'concrete/Email.php';
 include 'concrete/Sms.php';
-include '../database/SendTypePdo.php';
-include 'controller/Base.php';
-
-$type = $_GET["type"];
-$text = $_GET["text"];
-
-if(!empty ($_GET["type"] && $_GET["text"])){
-
-    $base = new Base();
-    $base->process($type,$text,$conn);
-}
 
 class DataStorage {
 
@@ -25,9 +15,9 @@ class DataStorage {
 
     public function istantiateByType() {
 
+        $this->typeValidation();
         $class = $this->type; //sms
         $istance = new $class($this->text); //istanziamento con attribute $text
-        
         return $istance;
     }
 
@@ -35,6 +25,17 @@ class DataStorage {
 
         $store = new SendTypePdo($this->type, $this->text);
         $store->insert($conn);
+    }
+
+    private function typeValidation() {
+
+        $dir = '../php/concrete';
+        $typeList = scandir($dir);
+        $type = ucfirst($this->type).'.php';
+
+        if (!array_search($type, $typeList)) {
+            throw new CustomException('Tipologia non valida');
+        }
     }
 
 }
