@@ -1,26 +1,22 @@
-<?php 
+<?php
 
-class Sms implements Base {
+class Sms implements Template {
 
     public function __construct($text) {
 
-        if ($this->isValid($text)){
-            echo('Il testo è troppo lungo');
-        }
         $this->sms = $text;
-
     }
 
     public function response() {
 
-        echo('Istanziamento classe per: SMS');
-        
+        echo('Istanziamento classe per: SMS <br>');    
     }
 
-    private function isValid($text) {
+    public function isValid($text) {
 
-        return strlen($text) > 10;
-        
+        if (strlen($text) > 20) {
+            throw new CustomException('Testo troppo lungo');
+        } 
     }
 
 }

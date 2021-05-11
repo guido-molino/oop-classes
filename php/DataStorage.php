@@ -1,28 +1,41 @@
 <?php
-require 'Base.php';
+
+require 'Template.php';
 include 'concrete/Posta.php';
 include 'concrete/Email.php';
 include 'concrete/Sms.php';
-
-$type = $_GET["type"];
-$text = $_GET["text"];
-$dataStorage = new DataStorage($type,$text);
 
 class DataStorage {
 
     public function __construct($type,$text) {
         
         $this->type = $type;
-        $this->istantiateByType($text);
-    
+        $this->text = $text;
     }
 
-    protected function istantiateByType($text) {
+    public function istantiateByType() {
 
+        $this->typeValidation();
         $class = $this->type; //sms
-        $istance = new $class($text); 
-        $istance->response();
+        $istance = new $class($this->text); //istanziamento con attribute $text
         return $istance;
+    }
+
+    public function store($conn) {
+
+        $store = new SendTypePdo($this->type, $this->text);
+        $store->insert($conn);
+    }
+
+    private function typeValidation() {
+
+        $dir = '../php/concrete';
+        $typeList = scandir($dir);
+        $type = ucfirst($this->type).'.php';
+
+        if (!array_search($type, $typeList)) {
+            throw new CustomException('Tipologia non valida');
+        }
     }
 
 }

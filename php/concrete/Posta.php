@@ -1,25 +1,24 @@
 <?php
 
-class Posta implements Base {
+class Posta implements Template {
 
     public function __construct($text) {
 
-        if ($this->isValid($text)) {
-            echo ('Il testo è troppo lungo');
-        }
         $this->posta = $text;
 
     }
 
     public function response() {
 
-        echo('Istanziamento classe per: Posta');
+        echo('Istanziamento classe per: Posta <br>');
 
     }
 
-    private function isValid($text) {
+    public function isValid($text) {
 
-        return strlen($text) > 20;
+        if (strlen($text) > 20) {
+            throw new CustomException('Testo troppo lungo');
+        }
 
     }
 
