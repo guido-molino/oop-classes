@@ -1,5 +1,4 @@
 <?php
-
 class SendLogPdo {
 
     public function __construct($message)

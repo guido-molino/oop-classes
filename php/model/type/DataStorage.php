@@ -12,7 +12,13 @@ class DataStorage {
         $this->type = $type;
         $this->text = $text;
     }
-
+    
+    public function store($conn) {
+        
+        $store = new SendTypePdo($this->type, $this->text);
+        $store->insert($conn);
+    }
+    
     public function istantiateByType() {
 
         $this->typeValidation();
@@ -20,16 +26,10 @@ class DataStorage {
         $istance = new $class($this->text); //istanziamento con attribute $text
         return $istance;
     }
-
-    public function store($conn) {
-
-        $store = new SendTypePdo($this->type, $this->text);
-        $store->insert($conn);
-    }
-
+    
     private function typeValidation() {
 
-        $dir = '../php/concrete';
+        $dir = '../php/model/type/concrete';
         $typeList = scandir($dir);
         $type = ucfirst($this->type).'.php';
 

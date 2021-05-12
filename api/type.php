@@ -1,9 +1,9 @@
 <?php
-include '../php/controller/Base.php';
 include '../database/DbConn.php';
 include '../database/SendTypePdo.php';
 include '../database/SendLogPdo.php';
-include '../php/DataStorage.php';
+include '../php/controller/TypeController.php';
+include '../php/model/type/DataStorage.php';
 include '../php/exceptions/CustomException.php';
 
 $base = new Base();
