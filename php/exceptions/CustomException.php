@@ -1,6 +1,6 @@
 <?php
 
-include '../database/SendLogPdo.php';
+include '../database/services/SendLogPdo.php';
 
 class CustomException extends Exception {
 

@@ -1,6 +1,4 @@
 <?php
-require_once 'Pdoconfig.php';
-
 class SendSourcePdo {
 
     public function __construct($type,$text) {
