@@ -4,6 +4,8 @@ require 'Template.php';
 include 'concrete/Posta.php';
 include 'concrete/Email.php';
 include 'concrete/Sms.php';
+include '../database/SendSourcePdo.php';
+include '../php/exceptions/CustomException.php';
 
 class DataStorage {
 
@@ -15,7 +17,7 @@ class DataStorage {
     
     public function store($conn) {
         
-        $store = new SendTypePdo($this->type, $this->text);
+        $store = new SendSourcePdo($this->type, $this->text);
         $store->insert($conn);
     }
     
