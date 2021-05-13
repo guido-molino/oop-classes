@@ -46,25 +46,21 @@ class SendUserPdo {
 
     public function update($newData) {
 
-        var_dump($newData);
         $data = [
             'name'          => $newData->name,
             'lastname'      => $newData->lastname,
             'date_of_birth' => $newData->date_of_birth,
             'age'           => $newData->age,
             'send_type'     => $newData->send_type,
-            'id'            => $newData->id,
+            'id'            => $newData->id
         ];
 
-        var_dump($data);
-
         $sql = "UPDATE users   
-                SET name=:firstname,
+                SET name=:name,
                     lastname=:lastname,
                     date_of_birth=:date_of_birth,
                     age=:age,
-                    send_type=:send_type
-                    
+                    send_type=:send_type               
                 WHERE id=:id";
 
         $updateStatement = $this->conn->prepare($sql);
@@ -76,10 +72,11 @@ class SendUserPdo {
 
     }
 
-    private function timestamp() {
+    public function delete($id) {
 
-        date_default_timezone_set('Europe/Rome');
-        return date('Y-m-d H:i:s');
+        $deleteStatement = $this->conn->prepare("DELETE FROM users WHERE id=? ");
+        $deleteStatement->execute([$id]);
+        echo('Utente cancellato');
     }
     
 }
