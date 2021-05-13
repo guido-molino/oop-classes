@@ -22,7 +22,7 @@ class UserController {
         //in base al metodo della request  reindirizzo l'applicazione al comportamento opportuno
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':   $this->read();    break;
-            case 'POST':  $this->create('not yet implemented'); break;
+            case 'POST':  $this->create();  break;
             case 'PUT':   $this->update();  break;
             case 'DELETE':$this->delete();  break;
             default: echo ('invalid method');  break;
@@ -31,41 +31,74 @@ class UserController {
 
     protected function read() {
 
-        //se nella request è presente l'id
-        if ($this->userOrList() === true) {
-            //ricavo i dati associati all'utente dell'id in request
-            $this->istance->getUserData($this->request['id']);
+        //se in request è presente l'id torno l'utente, sennò una lista di utenti
+        $data = $this->userOrList();       
+        print_r($data);
             
-        } else {
-            //ricavo la lista degli utenti
-            $this->istance->getUserList();
-        }
     }
 
     protected function create() {
 
+        $this->istance->userFormat();
+        $data = new SendUserPdo($this->conn);
+        $data->insert($this->istance);
     }
 
     protected function update() {
 
+        $id = $this->request['id'];
+        //eseguo il format dei dati in request
+        $this->istance->userFormat();
+        //ritiro l'utente dall'id
+        $user = $this->getUserData($id);
+        //inserisco a user i dati istanziati validi
+        $newUserData = $this->updateUserData($user, $this->istance);
+        //eseguo l'update
+        $data = new SendUserPdo($this->conn);
+        $data->update($newUserData);
     }
 
     protected function delete() {
+
 
     }
 
     private function userOrList() {
 
-        $request = $this->request;
+        if (array_key_exists('id', $this->request)) {
 
-        if (array_key_exists('id', $request )) {
+            return $this->getUserData($this->request['id']);
 
-            return true;
+        } else {
 
-        }   else {
-
-            return false;
+            return $this->getUserList();
         }
     }
 
+    public function getUserData($id) {
+
+        // validazione dell' id 
+        //$this->idValidation($id);
+        $user = new SendUserPdo($this->conn);
+        return ($user->select($id));
+    }
+
+    public function getUserList() {
+
+        $list = new SendUserPdo($this->conn);
+        return ($list->select());
+    }
+    
+    private function updateUserData($user, $requestData) {
+        
+        foreach ($requestData as $key => $property) {
+            
+            if (!$property === false && !is_array($property) && !is_object($property)) {
+                
+                $user->$key = $property;   
+            } 
+        } 
+        
+        return $user;
+    }
 }
