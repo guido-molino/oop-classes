@@ -28,37 +28,43 @@ class UserController {
                 case 'POST':  $this->create();  break;
                 case 'PUT':   $this->update();  break;
                 case 'DELETE':$this->delete();  break;
-                default: throw new Exception('invalid method', 400);  break;
+                default: throw new Exception('Metodo non valido', 400);  break;
             }
 
-        } catch (CustomException $e) {
-
-            echo $e->sendLogsException($this->conn);
         } catch (Exception $e) {
 
-            //creiamo una funzione per trasformare la response in JSON {$e->code:$e->message}
-            echo $e->getCode()." : ".$e->getMessage();
+            echo json_encode(array(
+                'status' => $e->getCode(),
+                'message' => $e->getMessage()
+            ));
         }
     }    
 
     protected function read() {
 
-        //se in request è presente l'id torno l'utente, sennò una lista di utenti
         $data = $this->userOrList(); 
         if ($data === false) {
-            throw new Exception('Invalid ID', 400);
+            throw new Exception('ID non valido', 400);
         }      
-        throw new Exception(json_encode($data), 200);       
+        echo(json_encode(array(
+            "status" => 200,
+            "data" => $data
+        )));
     }
 
     protected function create() {
         
+        $this->istance->fullValidation();
         $this->istance->userFormat();
         $this->service->insert($this->istance);
     }
 
     protected function update() {
 
+        //controllo se i dati in request sono validi
+        $this->istance->partialValidation();
+        //controllo se l'utente esiste
+        $this->checkIfUserExists();
         //eseguo il format dei dati in request
         $this->istance->userFormat();
         //ritiro l'utente dall'id
@@ -71,6 +77,9 @@ class UserController {
 
     protected function delete() {
 
+        //controllo se l'id è valido
+        $this->checkIfUserExists();
+        //eseguo la delete
         $this->service->delete($this->request['id']);
     }
 
@@ -96,5 +105,13 @@ class UserController {
             } 
         }        
         return $user;
+    }
+
+    private function checkIfUserExists() {
+
+        //se non è presente l' id o non è associato ad un utente torniamo "invalid id"
+        if (isset($this->request['id']) === false || !$this->service->select($this->request['id'])) {
+            throw new Exception('ID non valido', 400);
+        }
     }
 }

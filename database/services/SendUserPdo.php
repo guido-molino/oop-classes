@@ -20,10 +20,14 @@ class SendUserPdo {
                        VALUES (:name, :lastname, :date_of_birth, :age, :send_type)";
 
         $insertStatement = $this->conn->prepare($sql);
+
         if ($insertStatement->execute($data)) {
-            echo "Utente ".$user->name." ".$user->lastname." registrato con successo! <br>";
+            echo (json_encode(array(
+                "status" => 200,
+                "message" => 'Utente ' . $user->name . ' ' . $user->lastname . ' creato con successo!'
+            )));       
         } else {
-            echo "Registrazione dei dati fallita <br>";
+            throw new Exception('Invalid Payload', 400);
         }
     }
 
@@ -64,10 +68,14 @@ class SendUserPdo {
                 WHERE id=:id";
 
         $updateStatement = $this->conn->prepare($sql);
+        
         if ($updateStatement->execute($data)) {
-            echo "Utente " . $newData->name . " " . $newData->lastname . " aggiornato con successo! <br>";
+            echo (json_encode(array(
+                "status" => 200,
+                "message" => 'Utente ' . $newData->name . ' ' . $newData->lastname . ' aggiornato con successo!'
+            )));       
         } else {
-            echo "Aggiornamento dei dati fallito <br>";
+            throw new Exception('Aggiornamento dei dati fallito', 500);
         }
 
     }
@@ -75,8 +83,15 @@ class SendUserPdo {
     public function delete($id) {
 
         $deleteStatement = $this->conn->prepare("DELETE FROM users WHERE id=? ");
-        $deleteStatement->execute([$id]);
-        echo('Utente cancellato');
+
+        if ($deleteStatement->execute([$id])) {
+            echo (json_encode(array(
+                "status" => 200,
+                "message" => 'Utente cancellato'
+            )));
+        } else {
+            throw new Exception('ID non valido', 200);
+        }
     }
     
 }
