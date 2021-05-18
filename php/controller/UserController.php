@@ -3,6 +3,7 @@
 include '../database/DbConn.php';
 include '../php/model/user/User.php';
 include '../php/exceptions/CustomException.php';
+include '../database/services/SendTypePdo.php';
 
 class UserController {
 
@@ -54,8 +55,13 @@ class UserController {
 
     protected function create() {
         
+        //validazione su tutti i parametri della request necessari per la creazione dell'utente
         $this->istance->fullValidation();
+        //formattiamo i dati 
         $this->istance->userFormat();
+        //ricaviamo l'id associato al type
+        $this->setTypeId();
+        //inseriamo i dati nel db
         $this->service->insert($this->istance);
     }
 
@@ -67,12 +73,14 @@ class UserController {
         $this->checkIfUserExists();
         //eseguo il format dei dati in request
         $this->istance->userFormat();
-        //ritiro l'utente dall'id
+        //ritiro l'utente in base all'id
         $user = $this->service->select($this->request['id']);
+        //ricaviamo l'id associato al type
+        $this->setTypeId();
         //inserisco a user i dati istanziati validi
-        $newUserData = $this->updateUserData($user, $this->istance);
-        //eseguo l'update
-        $this->service->update($newUserData);
+        $updatedUser = $this->updateUserData($user, $this->istance);
+        //aggiorno i dati del server
+        $this->service->update($updatedUser);
     }
 
     protected function delete() {
@@ -110,8 +118,20 @@ class UserController {
     private function checkIfUserExists() {
 
         //se non è presente l' id o non è associato ad un utente torniamo "invalid id"
-        if (isset($this->request['id']) === false || !$this->service->select($this->request['id'])) {
+        if (isset($this->request['id']) === false) {
+            throw new Exception('Richiesta non valida', 400);
+        }
+        if (!$this->service->select($this->request['id'])) {
             throw new Exception('ID non valido', 400);
         }
+    }
+
+    private function setTypeId() {
+
+        //preleviamo l'id della tipologia associata a quella ricevuta in request
+        $request = new SendTypePdo($this->conn);
+        $typeId = $request->select($this->request['type']);
+        //lo impostiamo come type_id per lo user
+        $this->istance->type_id = $typeId->id;
     }
 }

@@ -1,11 +1,10 @@
 <?php
 
 include '../database/services/SendUserPdo.php';
-//include '../php/exceptions/CustomException.php';
 
 class User {
 
-    public $name,$lastname,$date_of_birth,$age,$send_type;
+    public $name,$lastname,$date_of_birth,$age,$type,$type_id;
 
     public function __construct($request, $conn) {
         
@@ -22,8 +21,8 @@ class User {
         $this->date_of_birth = array_key_exists('date_of_birth', $this->request) == true ? date("Y-m-d", strtotime($this->request['date_of_birth'])) : false;
         //age = current date - dateofbirth
         $this->age           = array_key_exists('date_of_birth', $this->request) == true ? $this->calcAge() : false;
-        $this->send_type     = array_key_exists('send_type', $this->request)     == true ? $this->request['send_type'] : false;
-    }
+        $this->type          = array_key_exists('type', $this->request)          == true ? $this->request['type'] : false;
+    }   
 
     private function calcAge() {
 
@@ -38,7 +37,7 @@ class User {
         $this->validateName();
         $this->validateLastName();
         $this->validateDoB();
-        $this->validateSendType();
+        $this->validateType();
     }
 
     public function partialValidation() {
@@ -49,11 +48,10 @@ class User {
                 case 'name':          $this->validateName();      break;
                 case 'lastname':      $this->validateLastName();  break;
                 case 'date_of_birth': $this->validateDoB();       break;
-                case 'sent_type':     $this->validateSendType();  break;
+                case 'type':          $this->validateType();      break;
                 //default: throw new Exception($key .' non valido', 400);  break;
             }
         }
-
     }
 
     private function validateName() {
@@ -86,14 +84,14 @@ class User {
         }
     }
 
-    private function validateSendType() {
+    private function validateType() {
 
-        if (!isset($this->request['send_type'])) {
+        if (!isset($this->request['type'])) {
             throw new Exception('tipologia non valida', 400);
         }
         $dir = '../php/model/type/concrete';
         $typeList = scandir($dir);
-        $type = ucfirst($this->request['send_type']) . '.php';
+        $type = ucfirst($this->request['type']) . '.php';
 
         if (!array_search($type, $typeList)) {
             throw new Exception('tipologia non valida', 400);

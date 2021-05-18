@@ -13,7 +13,7 @@ class SendLogPdo {
 
         $data = [
             'message' => $this->message,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at 
         ];
 
         $insertStatement = $conn->prepare("INSERT INTO logs (message, created_at) VALUES (:message, :created_at)");

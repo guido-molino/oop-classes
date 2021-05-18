@@ -1,5 +1,5 @@
 <?php
-include '../php/model/type/DataStorage.php';
+include '../php/model/source/DataStorage.php';
 
 class SourceController {
 
