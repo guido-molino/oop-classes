@@ -27,6 +27,7 @@ class UserController {
                 case 'GET':   $this->read();    break;
                 case 'POST':  $this->create();  break;
                 case 'PUT':   $this->update();  break;
+                case 'PATCH': $this->update();  break;
                 case 'DELETE':$this->delete();  break;
                 default: throw new Exception('Metodo non valido', 400);  break;
             }
@@ -53,19 +54,17 @@ class UserController {
     }
 
     protected function create() {
-        
         //validazione su tutti i parametri della request necessari per la creazione dell'utente
         $this->istance->fullValidation();
         //formattiamo i dati 
         $this->istance->userFormat();
-        //ricaviamo l'id associato al type
-        $this->setTypeId();
+        //ricaviamo gli id associati al type
+        $this->istance->type_id = $this->setTypeId($this->istance->type);
         //inseriamo i dati nel db
         $this->service->insert($this->istance);
     }
 
     protected function update() {
-
         //controllo se i dati in request sono validi
         $this->istance->partialValidation();
         //controllo se l'utente esiste
@@ -75,15 +74,17 @@ class UserController {
         //ritiro l'utente in base all'id
         $user = $this->service->select($this->request['id']);
         //ricaviamo l'id associato al type
-        $this->setTypeId();
+        $user->type = explode(',',$user->type);
         //inserisco a user i dati istanziati validi
         $updatedUser = $this->updateUserData($user, $this->istance);
+        //ricaviamo gli id associati al type
+        $updatedUser->type_id = $this->setTypeId($updatedUser->type);
         //aggiorno i dati del server
+        $this->service->userTypeDelete($updatedUser->id);
         $this->service->update($updatedUser);
     }
 
     protected function delete() {
-
         //controllo se l'id è valido
         $this->checkIfUserExists();
         //eseguo la delete
@@ -103,20 +104,22 @@ class UserController {
     }
     
     private function updateUserData($user, $requestData) {
-        
+        //var_dump('request data', $requestData);
         foreach ($requestData as $key => $property) {
             
-            if (!$property === false && !is_array($property) && !is_object($property)) {
-                
+            if (!$property === false && !is_array($property)) {   
                 $user->$key = $property;   
             } 
-        }        
+            if (!$property === false && $key == 'type') {
+                $user->$key = null;
+                $user->$key = $property;
+            }
+        }      
         return $user;
     }
 
     private function checkIfUserExists() {
-
-        //se non è presente l' id o non è associato ad un utente torniamo "invalid id"
+        //se l' id non è associato ad un utente torniamo "invalid id"
         if (isset($this->request['id']) === false) {
             throw new Exception('Richiesta non valida', 400);
         }
@@ -125,11 +128,14 @@ class UserController {
         }
     }
 
-    private function setTypeId() {
-
-        //preleviamo l'id della tipologia associata a quella ricevuta in request
-        $typeId = $this->service->typeSelect($this->request['type']);
-        //lo impostiamo come type_id per lo user
-        $this->istance->type_id = $typeId->id;
+    private function setTypeId($types) {
+        $type_id = array();
+        foreach ($types as $type) {
+            //preleviamo l'id della tipologia associata a quella ricevuta in request
+            $typeId = $this->service->typeSelect($type);
+            //lo impostiamo come type_id per lo user
+            array_push($type_id, $typeId->id);
+        }
+        return $type_id;
     }
 }

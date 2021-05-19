@@ -4,7 +4,8 @@ include '../database/services/SendUserPdo.php';
 
 class User {
 
-    public $name,$lastname,$date_of_birth,$age,$type,$type_id;
+    public $name,$lastname,$date_of_birth,$age,$type;
+    public $type_id = array();
 
     public function __construct($request, $conn) {
         
@@ -71,7 +72,6 @@ class User {
     private function validateDoB() {
 
         if (!isset($this->request['date_of_birth'])){
-
             throw new Exception('data di nascita non valida', 400);
         }
 
@@ -85,16 +85,20 @@ class User {
     }
 
     private function validateType() {
-
+        
         if (!isset($this->request['type'])) {
             throw new Exception('tipologia non valida', 400);
         }
+        
         $dir = '../php/model/source/concrete';
         $typeList = scandir($dir);
-        $type = ucfirst($this->request['type']) . '.php';
 
-        if (!array_search($type, $typeList)) {
-            throw new Exception('tipologia non valida', 400);
+        foreach ($this->request['type'] as $key => $type) {
+
+            $result = ucfirst($type) . '.php';
+            if (!array_search($result, $typeList)) {
+                throw new Exception('tipologia' . $type . 'non valida', 400);
+            }
         }
     }
 
