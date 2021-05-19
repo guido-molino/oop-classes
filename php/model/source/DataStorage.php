@@ -31,7 +31,7 @@ class DataStorage {
     
     private function typeValidation() {
 
-        $dir = '../php/model/type/concrete';
+        $dir = '../php/model/source/concrete';
         $typeList = scandir($dir);
         $type = ucfirst($this->type).'.php';
 

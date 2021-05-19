@@ -89,7 +89,7 @@ class User {
         if (!isset($this->request['type'])) {
             throw new Exception('tipologia non valida', 400);
         }
-        $dir = '../php/model/type/concrete';
+        $dir = '../php/model/source/concrete';
         $typeList = scandir($dir);
         $type = ucfirst($this->request['type']) . '.php';
 

@@ -3,7 +3,6 @@
 include '../database/DbConn.php';
 include '../php/model/user/User.php';
 include '../php/exceptions/CustomException.php';
-include '../database/services/SendTypePdo.php';
 
 class UserController {
 
@@ -42,7 +41,7 @@ class UserController {
     }    
 
     protected function read() {
-
+        //in base alla request torniamo una lista di utenti o un utente singolo
         $data = $this->userOrList(); 
         if ($data === false) {
             throw new Exception('ID non valido', 400);
@@ -92,13 +91,13 @@ class UserController {
     }
 
     private function userOrList() {
-
+        //se in request è presente l'id
         if (array_key_exists('id', $this->request)) {
-
+            //torniamo un utente
             return $this->service->select($this->request['id']);
 
         } else {
-
+            //torniamo una lista di utenti
             return $this->service->select();
         }
     }
@@ -129,8 +128,7 @@ class UserController {
     private function setTypeId() {
 
         //preleviamo l'id della tipologia associata a quella ricevuta in request
-        $request = new SendTypePdo($this->conn);
-        $typeId = $request->select($this->request['type']);
+        $typeId = $this->service->typeSelect($this->request['type']);
         //lo impostiamo come type_id per lo user
         $this->istance->type_id = $typeId->id;
     }

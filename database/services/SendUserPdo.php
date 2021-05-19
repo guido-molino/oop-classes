@@ -1,9 +1,30 @@
 <?php
+
 class SendUserPdo {
 
     public function __construct($conn) {
         
         $this->conn = $conn;
+    }
+
+    public function select($id = null) {
+
+        if (is_null($id)) {
+
+            $selectStatement = $this->conn->query("SELECT * FROM users ORDER BY id");
+            $list = $selectStatement->fetchAll(PDO::FETCH_OBJ);
+            return $list;
+        } else {
+
+            $selectStatement = $this->conn->prepare("SELECT * FROM users WHERE id=?");
+
+            if ($selectStatement->execute([$id])) {
+                $user = $selectStatement->fetch(PDO::FETCH_OBJ);
+                return $user;
+            } else {
+                throw new Exception('invalid ID', 500);
+            }
+        }
     }
 
     public function insert($user) {
@@ -24,35 +45,14 @@ class SendUserPdo {
         }
         //prendiamo l'id dell'ultimo utente appena inserito tramite metodo PDO::lastInsertId
         $lastUserId = $this->conn->lastInsertId();
-        //inseriamo id dello user e del type nella tabella pivot types_users
-        $this->typeInsert($user->type_id, $lastUserId);
+        //istanziamo il servizio per effettuare l'insert per la tabella pivot users_types
+        $this->userTypeInsert($user->type_id, $lastUserId);
         //response
         echo (json_encode(array(
             "status" => 200,
             "message" => 'Utente ' . $user->name . ' ' . $user->lastname . ' creato con successo!'
         )));       
 
-    }
-
-    public function select($id=null) {
-
-        if (is_null($id)) {
-
-            $selectStatement = $this->conn->query("SELECT * FROM users ORDER BY id");
-            $list = $selectStatement->fetchAll(PDO::FETCH_OBJ);
-            return $list;
-
-        }   else {
-
-            $selectStatement = $this->conn->prepare("SELECT * FROM users WHERE id=?");
-            
-            if ($selectStatement->execute([$id])) {
-                $user = $selectStatement->fetch(PDO::FETCH_OBJ);
-                return $user;
-            } else {
-                throw new Exception('invalid ID', 500);
-            }
-        }
     }
 
     public function update($updatedUser) {
@@ -75,7 +75,7 @@ class SendUserPdo {
             var_dump($updateStatement->execute($dataUser));
             throw new Exception('Update Failed', 500);
         }
-        $this->typeInsert($updatedUser->type_id, $updatedUser->id);
+        $this->userTypeInsert($updatedUser->type_id, $updatedUser->id);
         echo (json_encode(array(
             "status" => 200,
             "message" => 'Utente ' . $updatedUser->name . ' ' . $updatedUser->lastname . ' aggiornato con successo!'
@@ -92,6 +92,56 @@ class SendUserPdo {
             )));
         } else {
             throw new Exception('ID non valido', 200);
+        }
+    }
+    
+    /* PIVOT USERS_TYPES */ 
+
+    private function userTypeInsert($typeId, $userId) {
+        //inseriamo l'id utente e l'id type nella table users_types
+        $dataType = [
+            'users_id'  => $userId,
+            'types_id'  => $typeId
+        ];
+        $sqlType = "INSERT INTO users_types (users_id, types_id) 
+                           VALUES (:users_id, :types_id)";
+        $insertTypeStatement = $this->conn->prepare($sqlType);
+        //se non riesce a scrivere il dato nel db lancia Exception 500
+        if (!$insertTypeStatement->execute($dataType)) {
+            throw new Exception('users_types relation error', 500);
+        }
+    }
+    
+    public function typeSelect($type = null) {
+
+        if (is_null($type)) {
+
+            $selectStatement = $this->conn->query("SELECT * FROM types ORDER BY id");
+            $list = $selectStatement->fetchAll(PDO::FETCH_OBJ);
+            return $list;
+        } else {
+
+            $selectStatement = $this->conn->prepare("SELECT id FROM types WHERE type=?");
+            if (!$selectStatement->execute([$type])) {
+                throw new Exception('Invalid Type', 500);
+            }
+            $typeId = $selectStatement->fetch(PDO::FETCH_OBJ);
+            return $typeId;
+        }
+    }
+
+    private function userTypeDelete($typeId, $userId) {
+        //inseriamo l'id utente e l'id type nella table users_types
+        $dataType = [
+            'users_id'  => $userId,
+            'types_id'  => $typeId
+        ];
+        $sqlType = "INSERT INTO users_types (users_id, types_id) 
+                           VALUES (:users_id, :types_id)";
+        $insertTypeStatement = $this->conn->prepare($sqlType);
+        //se non riesce a scrivere il dato nel db lancia Exception 500
+        if (!$insertTypeStatement->execute($dataType)) {
+            throw new Exception('users_types relation error', 500);
         }
     }
 }
