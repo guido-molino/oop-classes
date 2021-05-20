@@ -1,5 +1,4 @@
 <?php
-
 class Sms implements Template {
 
     public function __construct($text) {
