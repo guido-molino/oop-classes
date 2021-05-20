@@ -1,9 +1,12 @@
 <?php
-class Base {
+include '../php/model/source/DataStorage.php';
+
+class SourceController {
 
     public function __construct(){}
     
     public function read($type,$text) {  
+        
         try {
             
             $this->readable($type,$text);//controllo sul payload

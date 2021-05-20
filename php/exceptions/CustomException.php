@@ -1,5 +1,7 @@
 <?php
 
+include '../database/services/SendLogPdo.php';
+
 class CustomException extends Exception {
 
     protected $message;

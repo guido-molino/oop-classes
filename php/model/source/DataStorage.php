@@ -4,6 +4,8 @@ require 'Template.php';
 include 'concrete/Posta.php';
 include 'concrete/Email.php';
 include 'concrete/Sms.php';
+include '../database/services/SendSourcePdo.php';
+include '../php/exceptions/CustomException.php';
 
 class DataStorage {
 
@@ -12,7 +14,13 @@ class DataStorage {
         $this->type = $type;
         $this->text = $text;
     }
-
+    
+    public function store($conn) {
+        
+        $store = new SendSourcePdo($this->type, $this->text);
+        $store->insert($conn);
+    }
+    
     public function istantiateByType() {
 
         $this->typeValidation();
@@ -20,16 +28,10 @@ class DataStorage {
         $istance = new $class($this->text); //istanziamento con attribute $text
         return $istance;
     }
-
-    public function store($conn) {
-
-        $store = new SendTypePdo($this->type, $this->text);
-        $store->insert($conn);
-    }
-
+    
     private function typeValidation() {
 
-        $dir = '../php/concrete';
+        $dir = '../php/model/source/concrete';
         $typeList = scandir($dir);
         $type = ucfirst($this->type).'.php';
 

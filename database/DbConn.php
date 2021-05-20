@@ -18,10 +18,9 @@ class DbConn {
             $conn = new PDO("$this->db_connection:host=$this->host;dbname=$this->dbname", $this->username, $this->password, array(
                 PDO::ATTR_PERSISTENT => true
             ));
-            echo "Connessione a $this->dbname tramite $this->host eseguita. <br>";
             return $conn;
         } catch (PDOException $pe) {
-            die("Impossibile connettersi a $this->dbname :" . $pe->getMessage());
+            throw new Exception("Impossibile connettersi a $this->dbname :" . $pe->getMessage(), 500);
         }
     }
 }

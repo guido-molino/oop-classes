@@ -1,7 +1,5 @@
 <?php
-require_once 'Pdoconfig.php';
-
-class SendTypePdo {
+class SendSourcePdo {
 
     public function __construct($type,$text) {
         
@@ -19,7 +17,7 @@ class SendTypePdo {
             'created_at' => $this->created_at
         ];
 
-        $insertStatement = $conn->prepare("INSERT INTO types (type, text, created_at) VALUES (:type, :text, :created_at)");
+        $insertStatement = $conn->prepare("INSERT INTO sources (type, text, created_at) VALUES (:type, :text, :created_at)");
 
         if ($insertStatement->execute($data)) {
             echo "Nuovi dati inseriti con successo! <br>";
