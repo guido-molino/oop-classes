@@ -75,13 +75,29 @@ class UserController {
         $user = $this->service->select($this->request['id']);
         //ricaviamo l'id associato al type
         $user->type = explode(',',$user->type);
-        //inserisco a user i dati istanziati validi
+        //all'oggetto user inseriamo le proprietà ricevute in request
         $updatedUser = $this->updateUserData($user, $this->istance);
         //ricaviamo gli id associati al type
         $updatedUser->type_id = $this->setTypeId($updatedUser->type);
-        //aggiorno i dati del server
-        $this->service->userTypeDelete($updatedUser->id);
-        $this->service->update($updatedUser);
+        //se la request è in PATCH
+        if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+            //non cancello le relazioni in users_types, se l'utente immette una relazione già esistente riceve errore
+            foreach ($updatedUser->type_id as $key => $type_id) {
+                //cerchiamo la relazione
+                $relation = $this->service->userTypeSelect($updatedUser->id, $type_id);
+                //se è già presente torniamo errore
+                if (!$relation === false) {
+                    throw new Exception('Relazione già esistente', 400);
+                }
+            }
+            //se la realzione non esiste aggiorniamo l'utente con la relazione nuova
+            $this->service->update($updatedUser);
+        } else {
+            //cancello le relazioni esistenti in users_types associate allo userId
+            $this->service->userTypeDelete($updatedUser->id);
+            //aggiorno i dati del server
+            $this->service->update($updatedUser);
+        }
     }
 
     protected function delete() {
@@ -104,32 +120,32 @@ class UserController {
     }
     
     private function updateUserData($user, $requestData) {
-        //var_dump('request data', $requestData);
+        //per ciascuna proprietà presente in request
         foreach ($requestData as $key => $property) {
-            
-            if (!$property === false && !is_array($property)) {   
-                $user->$key = $property;   
-            } 
-            if (!$property === false && $key == 'type') {
+            //controllo che la proprietà non sia stata impostata a false durante la formattazione ed escludo la property->request
+            if (!$property === false || !$key == "request") {
                 $user->$key = null;
                 $user->$key = $property;
             }
-        }      
+        }
         return $user;
     }
 
     private function checkIfUserExists() {
-        //se l' id non è associato ad un utente torniamo "invalid id"
+        //se l'id non è presente in request torniamo "richiesta non valida"
         if (isset($this->request['id']) === false) {
             throw new Exception('Richiesta non valida', 400);
         }
+        //se l' id non è associato ad un utente torniamo "invalid id"
         if (!$this->service->select($this->request['id'])) {
             throw new Exception('ID non valido', 400);
         }
     }
 
     private function setTypeId($types) {
+        //variabile che conterrà gli id
         $type_id = array();
+        //per ciascun type
         foreach ($types as $type) {
             //preleviamo l'id della tipologia associata a quella ricevuta in request
             $typeId = $this->service->typeSelect($type);

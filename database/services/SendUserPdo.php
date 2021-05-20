@@ -64,7 +64,7 @@ class SendUserPdo {
     }
 
     public function update($updatedUser) {
-
+        //aggiorniamo tutti i campi dell'utente selezionato per id
         $dataUser = [
             'name'          => $updatedUser->name,
             'lastname'      => $updatedUser->lastname,
@@ -82,6 +82,7 @@ class SendUserPdo {
         if (!$updateStatement->execute($dataUser)) {
             throw new Exception('Update Failed', 500);
         }
+        //per ciascun type_id eseguiamo l'insert della relazione
         foreach ($updatedUser->type_id as $key => $type_id) {
             $this->userTypeInsert($type_id, $updatedUser->id);
         }
@@ -93,6 +94,7 @@ class SendUserPdo {
 
     public function delete($id) {
 
+        //cancelliamo l'utente selezionato per id
         $deleteStatement = $this->conn->prepare("DELETE FROM users WHERE id=? ");
         if ($deleteStatement->execute([$id])) {
             echo (json_encode(array(
@@ -106,7 +108,7 @@ class SendUserPdo {
     
     /* PIVOT USERS_TYPES */ 
 
-    private function userTypeInsert($typeId, $userId) {
+    private function userTypeInsert(int $typeId, int $userId) {
         //inseriamo l'id utente e l'id type nella table users_types
         $dataType = [
             'users_id'  => $userId,
@@ -122,25 +124,30 @@ class SendUserPdo {
     }
     
     public function userTypeDelete(int $userId) {
-
-        $sqlType = "DELETE FROM users_types WHERE users_id=?";
+        //cancelliamo tutte le relazioni già associate all'utente
+        $sqlType = "DELETE FROM users_types WHERE users_id = ?";
         $insertTypeStatement = $this->conn->prepare($sqlType);
-        if (!$insertTypeStatement->execute([$userId])) {
-            throw new Exception('users_types relation error', 500);
-        } 
+        $insertTypeStatement->execute([$userId]);
     }
 
-    public function userTypeSelect(int $userId) {
-
-        $sqlType = "SELECT * FROM users_types WHERE users_id = ?";
+    public function userTypeSelect(int $userId, int $typeId) {
+        $dataType = [
+            'users_id'  => $userId,
+            'types_id'  => $typeId
+        ];
+        //selezioniamo la relazione che contiene i campi users_id e types_id
+        $sqlType = "SELECT * FROM users_types WHERE users_id = :users_id AND types_id = :types_id";
         $selectStatement = $this->conn->prepare($sqlType);
-        if (!$selectStatement->execute([$userId])) {
+        if (!$selectStatement->execute($dataType)) {
             throw new Exception('users_types relation failed to select', 500);
         }
+        $relation = $selectStatement->fetch(PDO::FETCH_OBJ);
+        return $relation;
     }
 
     public function typeSelect($type) {
 
+        //selezioniamo l'id associato ad un type
         $selectStatement = $this->conn->prepare("SELECT id FROM types WHERE type = ?");
         if (!$selectStatement->execute([$type])) {
             throw new Exception("unable to get Type ID", 500);
